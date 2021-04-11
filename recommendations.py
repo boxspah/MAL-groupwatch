@@ -17,8 +17,7 @@ class _WeightedVertex:
 
     Each vertex item is either a user id or anime title. Both are represented as strings,
     even though we've kept the type annotation as Any to be consistent with the public interface
-    have been using in class. Neighbours is a dictionary mapping a neighbour vertex to the weight
-    of the edge to from self to that neighbour.
+    have been using in class.
 
     Instance Attributes:
         - item: The data stored in this vertex, representing a user or anime.
@@ -203,6 +202,16 @@ class WeightedGraph:
         score_type is one of 'unweighted' or 'strict', corresponding to the
         different ways of calculating weighted graph vertex similarity.
 
+        The unweighted similarity score is zero if either of the two vertices have no
+        neighbors. Otherwise, it is the number of vertices adjacent to both self and other,
+        divided by the number of vertices adjacent to either self or other. It does not take
+        into account the weight of the edges.
+
+        The strict similarity score is zero if either of the two vertices have no
+        neighbors. Otherwise, it is the number of vertices adjacent to both self and other that
+        have the same weight on the corresponding edges to self and other, divided by the number of
+         vertices adjacent to either self or other. This takes the weight of the edges into account.
+
         Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
 
         Preconditions:
@@ -222,26 +231,29 @@ class WeightedGraph:
                          score_type: str = 'unweighted') -> list[tuple[str, float]]:
         """Return a list of up to <limit> tuples, where the first element is the recommended animes
         based on similarity to the given anime and the second their corresponding similarity scores.
+        Fewer than <limit> books are returned if and only if there aren't enough animes that
+        have a similarity score with <anime> that is greater than 0.
 
         score_type is one of 'unweighted' or 'strict', corresponding to the
         different ways of calculating weighted graph vertex similarity.
+
+        The unweighted similarity score is zero if either of the two vertices have no
+        neighbors. Otherwise, it is the number of vertices adjacent to both self and other,
+        divided by the number of vertices adjacent to either self or other. It does not take
+        into account the weight of the edges.
+
+        The strict similarity score is zero if either of the two vertices have no
+        neighbors. Otherwise, it is the number of vertices adjacent to both self and other that
+        have the same weight on the corresponding edges to self and other, divided by the number of
+         vertices adjacent to either self or other. This takes the weight of the edges into account.
+
         The corresponding similarity score formula is used
         in this method (whenever the phrase "similarity score" appears below).
 
         The return value is a list of the titles of recommended animes, sorted in
-        *descending order* of similarity score. Ties are broken in descending order
-        of book title. That is, if v1 and v2 have the same similarity score, then
+        descending order of similarity score. Ties are broken in descending order
+        of anime title. That is, if v1 and v2 have the same similarity score, then
         v1 comes before v2 if and only if v1.item > v2.item.
-
-        The returned list should NOT contain:
-            - the input anime itself
-            - any anime with a similarity score of 0 to the input anime
-            - any duplicates
-            - any vertices that represents a user (instead of a anime)
-
-        Up to <limit> animes are returned, starting with the anime with the highest similarity
-        score, then the second-highest similarity score, etc. Fewer than <limit> books are returned
-        if and only if there aren't enough animes that meet the above criteria.
 
         Preconditions:
             - anime in self._vertices
@@ -258,17 +270,14 @@ class WeightedGraph:
                 self.get_similarity_score(anime, anime_v1.item, score_type)
         anime_vertices.sort(key=(lambda x: x.item), reverse=True)
         anime_vertices.sort(key=(lambda x: similarity_scores[x.item]), reverse=True)
-        books = [(anime_v2.item, similarity_scores[anime_v2.item])
-                 for anime_v2 in anime_vertices[0: limit]
-                 if similarity_scores[anime_v2.item] != 0]
-        return books
+        animes = [(anime_v2.item, similarity_scores[anime_v2.item])
+                  for anime_v2 in anime_vertices[0: limit] if similarity_scores[anime_v2.item] != 0]
+        return animes
 
 
 if __name__ == '__main__':
-    # You can uncomment the following lines for code checking/debugging purposes.
-    # However, we recommend commenting out these lines when working with the large
-    # datasets, as checking representation invariants and preconditions greatly
-    # increases the running time of the functions/methods.
+    # Checking representation invariants and preconditions can take a lot of time
+    # on large datasets
     import python_ta.contracts
     python_ta.contracts.check_all_contracts()
 
