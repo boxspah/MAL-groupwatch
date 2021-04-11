@@ -225,8 +225,8 @@ class WeightedGraph:
         else:
             raise ValueError
 
-    def recommend_animes(self, anime: str, limit: int,
-                         score_type: str = 'unweighted') -> list[tuple[str, float]]:
+    def recommend_anime(self, anime: str, limit: int,
+                        score_type: str = 'unweighted') -> list[tuple[str, float]]:
         """Return a list of up to <limit> tuples, where the first element is the recommended animes
         based on similarity to the given anime and the second their corresponding similarity scores.
         Fewer than <limit> books are returned if and only if there aren't enough animes that
