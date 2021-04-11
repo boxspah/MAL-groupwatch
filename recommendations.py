@@ -15,9 +15,7 @@ from typing import Any, Union
 class _WeightedVertex:
     """A vertex in a weighted anime rating graph, used to represent a user or an anime.
 
-    Each vertex item is either a user id or anime title. Both are represented as strings,
-    even though we've kept the type annotation as Any to be consistent with the public interface
-    have been using in class.
+    Each vertex item is either a user id or anime title.
 
     Instance Attributes:
         - item: The data stored in this vertex, representing a user or anime.
@@ -73,7 +71,7 @@ class _WeightedVertex:
         The weighted similarity score is zero if either of the two vertices have no
         neighbors. Otherwise, it is the number of vertices adjacent to both self and other that
         have the same weight on the corresponding edges to self and other, divided by the number of
-         vertices adjacent to either self or other.
+        vertices adjacent to either self or other.
         """
         if self.degree() == 0 or other.degree() == 0:
             return 0
@@ -210,7 +208,7 @@ class WeightedGraph:
         The strict similarity score is zero if either of the two vertices have no
         neighbors. Otherwise, it is the number of vertices adjacent to both self and other that
         have the same weight on the corresponding edges to self and other, divided by the number of
-         vertices adjacent to either self or other. This takes the weight of the edges into account.
+        vertices adjacent to either self or other. This takes the weight of the edges into account.
 
         Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
 
@@ -245,7 +243,7 @@ class WeightedGraph:
         The strict similarity score is zero if either of the two vertices have no
         neighbors. Otherwise, it is the number of vertices adjacent to both self and other that
         have the same weight on the corresponding edges to self and other, divided by the number of
-         vertices adjacent to either self or other. This takes the weight of the edges into account.
+        vertices adjacent to either self or other. This takes the weight of the edges into account.
 
         The corresponding similarity score formula is used
         in this method (whenever the phrase "similarity score" appears below).
