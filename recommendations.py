@@ -227,8 +227,8 @@ class WeightedGraph:
 
     def recommend_anime(self, anime: str, limit: int,
                         score_type: str = 'unweighted') -> list[tuple[str, float]]:
-        """Return a list of up to <limit> tuples, where the first element is the recommended animes
-        based on similarity to the given anime and the second their corresponding similarity scores.
+        """Return a list of up to <limit> tuples, where the first element is the titles of the
+        recommended animes based on similarity to the given anime and the second their corresponding similarity scores.
         Fewer than <limit> books are returned if and only if there aren't enough animes that
         have a similarity score with <anime> that is greater than 0.
 
@@ -248,9 +248,8 @@ class WeightedGraph:
         The corresponding similarity score formula is used
         in this method (whenever the phrase "similarity score" appears below).
 
-        The return value is a list of the titles of recommended animes, sorted in
-        descending order of similarity score. Ties are broken in descending order
-        of anime title. That is, if v1 and v2 have the same similarity score, then
+        The tuples are sorted in descending order of similarity score and ties are broken in
+        descending order of anime title. That is, if v1 and v2 have the same similarity score, then
         v1 comes before v2 if and only if v1.item > v2.item.
 
         Preconditions:
