@@ -37,13 +37,11 @@ def load_graph(reviews_file: str, animes_file: str) -> WeightedGraph:
             anime_id = int(row[1])
             rating = int(row[2])
 
-            if anime_id not in catalogue:
-                continue
-            else:
+            if anime_id in catalogue:
                 graph.add_vertex(user_id, 'user')
                 graph.add_vertex(catalogue[anime_id], 'anime')
 
-            if rating != -1:
-                graph.add_edge(user_id, catalogue[anime_id], rating)
+                if rating != -1:
+                    graph.add_edge(user_id, catalogue[anime_id], rating)
 
     return graph
