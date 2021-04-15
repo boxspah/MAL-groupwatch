@@ -19,7 +19,7 @@ def load_graph(reviews_file: str, animes_file: str) -> WeightedGraph:
 
     with open(animes_file) as f:
         reader = csv.reader(f)
-        reader.next()
+        next(reader)
 
         for row in reader:
             anime_id = int(row[0])
@@ -29,7 +29,7 @@ def load_graph(reviews_file: str, animes_file: str) -> WeightedGraph:
 
     with open(reviews_file) as f:
         reader = csv.reader(f)
-        reader.next()
+        next(reader)
 
         for row in reader:
             user_id = int(row[0])
