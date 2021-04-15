@@ -3,6 +3,7 @@ Module Description:
 
 """
 from recommendations import WeightedGraph
+import html
 import csv
 
 
@@ -23,7 +24,7 @@ def load_graph(reviews_file: str, animes_file: str) -> WeightedGraph:
 
         for row in reader:
             anime_id = int(row[0])
-            title = row[1]
+            title = html.unescape(row[1])
 
             catalogue[anime_id] = title
 
