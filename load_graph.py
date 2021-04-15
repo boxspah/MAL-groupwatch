@@ -17,7 +17,7 @@ def load_graph(reviews_file: str, animes_file: str) -> WeightedGraph:
     graph = WeightedGraph()
     catalogue = {}
 
-    with open(animes_file) as f:
+    with open(animes_file, encoding="utf8") as f:
         reader = csv.reader(f)
         next(reader)
 
@@ -27,7 +27,7 @@ def load_graph(reviews_file: str, animes_file: str) -> WeightedGraph:
 
             catalogue[anime_id] = title
 
-    with open(reviews_file) as f:
+    with open(reviews_file, encoding="utf8") as f:
         reader = csv.reader(f)
         next(reader)
 
