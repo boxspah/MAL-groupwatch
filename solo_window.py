@@ -311,8 +311,8 @@ class UiFrame(object):
         _translate = QtCore.QCoreApplication.translate
         frame.setWindowTitle(_translate("frame", "Solo Watch"))
         self.tab.setText(_translate("frame",
-                                      "Now enter up to 10 anime you have watched "
-                                      "recently and your rating for each."))
+                                    "Now enter up to 10 anime you have watched "
+                                    "recently and your rating for each."))
         self.cbox5.setItemText(0, _translate("frame", "None"))
         self.cbox6.setItemText(0, _translate("frame", "None"))
         self.cbox9.setItemText(0, _translate("frame", "None"))
@@ -329,9 +329,9 @@ class UiFrame(object):
         self.tab3.setText(_translate("frame", "Rating"))
         self.tab5.setText(_translate("frame", "Rating"))
         self.tab6.setText(_translate("frame",
-                                        "<html><head/><body><p><span style=\" "
-                                        "font-weight:600;\">Returning user? "
-                                        "Use your csv data!</span></p></body></html>"))
+                                     "<html><head/><body><p><span style=\" "
+                                     "font-weight:600;\">Returning user? "
+                                     "Use your csv data!</span></p></body></html>"))
         self.button.setText(_translate("frame", "Insert CSV"))
 
     def get_values(self) -> None:
