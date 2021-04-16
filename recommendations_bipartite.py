@@ -135,8 +135,17 @@ class WeightedBipartiteGraph(WeightedGraph):
         TODO: finish documentation
 
         Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
+
+        Preconditions:
+            - self._vertices[item1].kind == self._vertices[item2].kind == 'user'
         """
-        ...
+        if item1 in self._vertices and item2 in self._vertices:
+            v1 = self._vertices[item1]
+            v2 = self._vertices[item2]
+            return v1.similarity_score(v2)
+
+        else:
+            raise ValueError
 
     def similarity_coefficient(self, user1: int, user2: int, target: str) -> float:
         """Returns the similarity coefficient of user1 and user1 with respect to
