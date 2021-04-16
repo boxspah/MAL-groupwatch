@@ -85,6 +85,33 @@ class _WeightedVertex:
             len_or = len(self_neighbours.union(other_neighbours))
             return len_and / len_or
 
+    def similarity_score_pearson(self, other: _WeightedVertex,
+                                 all_vertices: set[_WeightedVertex]) -> float:
+        if self.degree() == 0 or other.degree() == 0:
+            return 0
+        else:
+            self_vector = self._normalize_weights()
+            other_vector = other._normalize_weights()
+            dot_p_so_far = 0
+
+            for v in all_vertices:
+                if ...:
+                    ...
+
+            return dot_p_so_far / len(self_vector) ** 2
+
+    def _normalize_weights(self) -> dict[_WeightedVertex, Union[float, int]]:
+        norm_dict = {}
+        mean_rating = sum(self.neighbours.values()) / self.degree()
+
+        for v, w in self.neighbours:
+            norm_dict[v] = w - mean_rating
+
+        return norm_dict
+
+    def _magnitude(self) -> float:
+        return sum(w ** 2 for w in self.neighbours.values())
+
 
 class WeightedGraph:
     """A weighted graph used to represent a anime recommendation network that keeps track of
