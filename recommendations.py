@@ -86,8 +86,7 @@ class _WeightedVertex:
             len_or = len(self_neighbours.union(other_neighbours))
             return len_and / len_or
 
-    def similarity_score_pearson(self, other: _WeightedVertex,
-                                 all_vertices: set[_WeightedVertex]) -> float:
+    def similarity_score_pearson(self, other: _WeightedVertex) -> float:
         if self.degree() == 0 or other.degree() == 0:
             return 0
         else:
@@ -95,11 +94,11 @@ class _WeightedVertex:
             other_vector = other._normalize_weights()
             dot_p_so_far = 0
 
-            for v in all_vertices:
-                if ...:
-                    ...
+            for v in self_vector:
+                if v in other_vector:
+                    dot_p_so_far += self_vector[v] * other_vector[v]
 
-            return dot_p_so_far / len(self_vector) ** 2
+            return dot_p_so_far / (self._magnitude() * other._magnitude())
 
     def _normalize_weights(self) -> dict[_WeightedVertex, Union[float, int]]:
         norm_dict = {}
