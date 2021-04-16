@@ -90,6 +90,25 @@ class WeightedBipartiteGraph(WeightedGraph):
         if item not in self._vertices:
             self._vertices[item] = _WeightedBipartiteVertex(item, kind)
 
+    def add_edge(self, item1: Any, item2: Any, weight: Union[int, float] = 1) -> None:
+        """Add an edge between the two vertices with the given items in this graph,
+        with the given weight.
+
+        Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
+
+        Preconditions:
+            - item1 != item2
+            - self._vertices[item1].kind != self._vertices[item2].kind
+        """
+        if item1 in self._vertices and item2 in self._vertices:
+            v1 = self._vertices[item1]
+            v2 = self._vertices[item2]
+
+            v1.neighbours[v2] = weight
+            v2.neighbours[v1] = weight
+        else:
+            raise ValueError
+
     def adjacent(self, item1: Any, item2: Any) -> bool:
         """Return whether item1 and item2 are adjacent vertices in this graph.
 
@@ -123,3 +142,9 @@ class WeightedBipartiteGraph(WeightedGraph):
     def recommend_anime(self, anime: str, limit: int,
                         score_type: str = 'unweighted') -> list[tuple[str, float]]:
         ...
+
+
+def create_weighted_bipartite_graph(weighted_graph: WeightedGraph) -> WeightedBipartiteGraph:
+    """Transforms a weighted graph into a weighted bipartite recomemndations graph
+    according to the specifications in Song (2019)."""
+    ...
