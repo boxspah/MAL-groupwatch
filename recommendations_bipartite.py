@@ -12,6 +12,8 @@ from recommendations import WeightedGraph
 """ Constants for recommendations system."""
 INFLUENCE = 0.5
 SIM_THRESHOLD = 0.01
+MIN_RATING = 1
+MAX_RATING = 10
 # TODO: calibrate values
 
 
@@ -31,11 +33,10 @@ class _WeightedBipartiteVertex:
         - self not in self.neighbours
         - all(self in u.neighbours for u in self.neighbours)
         - self.kind in {'user', 'anime'}
-        - self.energy >= 0
     """
     item: Any
     kind: str
-    energy: float
+    energy_matrix: dict[_WeightedBipartiteVertex, float]
     neighbours: dict[_WeightedBipartiteVertex, Union[int, float]]
 
     def __init__(self, item: Any, kind: str) -> None:
@@ -48,7 +49,7 @@ class _WeightedBipartiteVertex:
         """
         self.item = item
         self.kind = kind
-        self.energy = ...
+        self.energy_matrix = {}
         self.neighbours = {}
 
     def degree(self) -> int:
@@ -58,7 +59,36 @@ class _WeightedBipartiteVertex:
     def similarity_score(self, other: _WeightedBipartiteVertex) -> float:
         """Return the similarity score between this vertex and other based on a sigmoid function.
         """
-        ...
+        if self.degree() == 0 or other.degree() == 0:
+            return 0
+
+        else:
+            mutual_neighbours = set(self.neighbours).intersection(set(other.neighbours))
+
+            num_so_far = 0
+
+            for n in mutual_neighbours:
+                energy_self = self.energy_matrix[n]
+                energy_other = other.energy_matrix[n]
+                coefficient = self.similarity_coefficient(other, n)
+                degree_target = n.degree()
+
+                num_so_far += (energy_self * energy_other * coefficient) / degree_target
+
+            return num_so_far / self.degree()
+
+    def similarity_coefficient(self, other: _WeightedBipartiteVertex,
+                               target: _WeightedBipartiteVertex) -> float:
+        """Returns the similarity coefficient of self and other with respect to
+        target.
+
+        Calculation based on formula given in paper.
+
+        Preconditions:
+            - self.kind == other.kind != target.kind
+        """
+        return 1 - abs(self.neighbours[target] - other.neighbours[target]) / \
+            (MAX_RATING - MIN_RATING)
 
 
 class WeightedBipartiteGraph(WeightedGraph):
@@ -146,20 +176,6 @@ class WeightedBipartiteGraph(WeightedGraph):
 
         else:
             raise ValueError
-
-    def similarity_coefficient(self, user1: int, user2: int, target: str) -> float:
-        """Returns the similarity coefficient of user1 and user1 with respect to
-        target.
-
-        Calculation based on formula given in paper.
-
-        Preconditions:
-            - {user1, user2, target}.issubset(set(self._vertices))
-            - self._vertices[user1].kind == self._vertices[user2].kind == 'user'
-            - self._vertices[target].kind == 'anime'
-        """
-        return 1 - abs(self.get_weight(user1, target) - self.get_weight(user2, target)) / \
-            (self.max_rating - self.min_rating)
 
     def recommend_anime(self, anime: str, limit: int,
                         score_type: str = 'unweighted') -> list[tuple[str, float]]:
