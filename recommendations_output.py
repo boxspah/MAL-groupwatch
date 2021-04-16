@@ -71,6 +71,8 @@ class UiForm(object):
         self.header = None
 
     def setup_ui(self, form: QtWidgets.QWidget) -> None:
+        """Set up the Final Window and initializes all the variables
+        to create the user interface of the window."""
         form.setObjectName("Form")
         form.resize(800, 600)
         self.layout_widget = QtWidgets.QWidget(form)
@@ -123,6 +125,7 @@ class UiForm(object):
         QtCore.QMetaObject.connectSlotsByName(form)
 
     def retranslateUi(self, form: QtWidgets.QWidget):
+        """Enter the text onto the user interface."""
         _translate = QtCore.QCoreApplication.translate
         form.setWindowTitle(_translate("Form", "Form"))
         self.item9.setText(_translate("Form",
