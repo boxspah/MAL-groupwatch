@@ -9,6 +9,7 @@ recommendation network with ratings as well.
 """
 from __future__ import annotations
 
+import math
 from typing import Any, Union
 
 
@@ -110,7 +111,7 @@ class _WeightedVertex:
         return norm_dict
 
     def _magnitude(self) -> float:
-        return sum(w ** 2 for w in self.neighbours.values())
+        return math.sqrt(sum(w ** 2 for w in self.neighbours.values()))
 
 
 class WeightedGraph:
