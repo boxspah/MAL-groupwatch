@@ -18,11 +18,13 @@ class UiFrame(object):
 
     Instance Attributes:
         - tab: The heading on top of the screen
-        - tab2: Heading that labels combo boxes where users submit anime
-        - tab3: Heading that labels spin boxes where users submit ratings
-        - tab4: Heading that labels combo boxes where users submit anime
-        - tab5: Heading that labels spin boxes where users submit ratings
-        - tab6: Heading that labels button where users can submit a csv file
+        - tab2: Heading that labels where the first person enter data
+        - tab2: Heading that labels where the second person enter data
+        - tab4: Heading that labels spin boxes where users submit ratings
+        - tab5: Heading that labels combo boxes where users submit anime
+        - tab6: Heading that labels combo boxes where users submit anime
+        - tab7: Heading that labels spin boxes where users submit ratings
+        - tab8: Heading that labels button where users can submit a csv file
         - button: Button that allows users to submit a csv file
         - button2: Button that allows users to submit input data
         - cbox1: Combo box where users choose an anime
