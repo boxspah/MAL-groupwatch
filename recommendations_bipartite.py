@@ -66,6 +66,8 @@ class WeightedBipartiteGraph(WeightedGraph):
 
     TODO: finish documentation
     """
+    min_rating: int
+    max_rating: int
     # Private Instance Attributes:
     #     - _vertices:
     #         A collection of the vertices contained in this graph.
@@ -75,6 +77,8 @@ class WeightedBipartiteGraph(WeightedGraph):
     def __init__(self) -> None:
         """Initialize an empty graph (no vertices or edges)."""
         self._vertices = {}
+        self.min_rating = 1
+        self.max_rating = 10
 
         WeightedGraph.__init__(self)
 
@@ -134,13 +138,19 @@ class WeightedBipartiteGraph(WeightedGraph):
         """
         ...
 
-    def similarity_coefficient(self, user1: int, user2: int, target_anime: str) -> float:
+    def similarity_coefficient(self, user1: int, user2: int, target: str) -> float:
         """Returns the similarity coefficient of user1 and user1 with respect to
-        target_anime.
+        target.
 
         Calculation based on formula given in paper.
+
+        Preconditions:
+            - {user1, user2, target}.issubset(set(self._vertices))
+            - self._vertices[user1].kind == self._vertices[user2].kind == 'user'
+            - self._vertices[target].kind == 'anime'
         """
-        ...
+        return 1 - abs(self.get_weight(user1, target) - self.get_weight(user2, target)) / \
+            (self.max_rating - self.min_rating)
 
     def recommend_anime(self, anime: str, limit: int,
                         score_type: str = 'unweighted') -> list[tuple[str, float]]:
