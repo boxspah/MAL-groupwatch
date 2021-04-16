@@ -10,21 +10,21 @@ The module contains the class that sets up the Greeting Window in our applicatio
 from PyQt5 import QtCore, QtGui, QtWidgets
 from typing import Optional, Union
 import sys
-import GroupWatchSolo
-import GroupWatchGroup
+import solo_window
+import group_window
 
 
 class UiMainWindow(object):
     """
-    Creates the Greeting Window for our application.
+    Create the Greeting Window for our application.
 
     Instance Attributes:
         - window: Object that initializes the Window
         - ui: Object that initializes the next window based on whether we choose solo or group
         recommendations
         - central_widget: Object upon which we lay upon the rest of our information
-        - push_button: A button that leads to solo recommendation page
-        - push_button2: A button that leads to group recommendation page
+        - button: A button that leads to solo recommendation page
+        - button2: A button that leads to group recommendation page
         - label: The heading on top of the screen
         - label2: Heading that labels button that leads to solo recommendation page
         - label3: Heading that labels button that leads to group recommendation page
@@ -32,10 +32,10 @@ class UiMainWindow(object):
         - label5: Information about the app at the bottom of the screen
     """
     window: Optional[QtWidgets.QMainWindow]
-    ui: Optional[Union[GroupWatchSolo.Ui_Frame, GroupWatchGroup.Ui_Frame]]
+    ui: Optional[Union[solo_window.UiFrame, group_window.UiFrame]]
     central_widget: Optional[QtWidgets.QWidget]
-    push_button: Optional[QtWidgets.QPushButton]
-    push_button2: Optional[QtWidgets.QPushButton]
+    button: Optional[QtWidgets.QPushButton]
+    button2: Optional[QtWidgets.QPushButton]
     label: Optional[QtWidgets.QLabel]
     label2: Optional[QtWidgets.QLabel]
     label3: Optional[QtWidgets.QLabel]
@@ -43,12 +43,12 @@ class UiMainWindow(object):
     label5: Optional[QtWidgets.QLabel]
 
     def __init__(self) -> None:
-        """Sets all attributes necessary for MainWindow to None by default."""
+        """Set all attributes necessary for MainWindow to None by default."""
         self.window = None
         self.ui = None
         self.central_widget = None
-        self.push_button = None
-        self.push_button2 = None
+        self.button = None
+        self.button2 = None
         self.label = None
         self.label2 = None
         self.label3 = None
@@ -58,28 +58,29 @@ class UiMainWindow(object):
         self.status_bar = None
 
     def open_group(self) -> None:
-        """Opens the group recommendation page in our application."""
+        """Open the group recommendation page in our application."""
         self.window = QtWidgets.QFrame()
-        self.ui = GroupWatchGroup.Ui_Frame()
-        self.ui.setupUi(self.window)
+        self.ui = group_window.UiFrame()
+        self.ui.setup_ui(self.window)
         widget.addWidget(self.window)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def open_solo(self) -> None:
-        """Opens the solo recommendation page in our application."""
+        """Open the solo recommendation page in our application."""
         self.window = QtWidgets.QFrame()
-        self.ui = GroupWatchSolo.Ui_Frame()
-        self.ui.setupUi(self.window)
+        self.ui = solo_window.UiFrame()
+        self.ui.setup_ui(self.window)
         widget.addWidget(self.window)
         widget.setCurrentIndex(widget.currentIndex() + 1)
 
     def setup_ui(self, main_window: QtWidgets.QMainWindow) -> None:
-        """Sets up the Greeting Window and initializes all the variables
+        """Set up the Greeting Window and initializes all the variables
         to create the user interface of the window."""
         main_window.setObjectName("MainWindow")
         main_window.setEnabled(True)
         main_window.resize(800, 600)
-        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                                            QtWidgets.QSizePolicy.Fixed)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(main_window.sizePolicy().hasHeightForWidth())
@@ -93,12 +94,12 @@ class UiMainWindow(object):
         main_window.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.central_widget = QtWidgets.QWidget(main_window)
         self.central_widget.setObjectName("central_widget")
-        self.push_button = QtWidgets.QPushButton(self.central_widget)
-        self.push_button.setGeometry(QtCore.QRect(420, 290, 93, 28))
-        self.push_button.setObjectName("push_button")
-        self.push_button2 = QtWidgets.QPushButton(self.central_widget)
-        self.push_button2.setGeometry(QtCore.QRect(420, 360, 93, 28))
-        self.push_button2.setObjectName("push_button2")
+        self.button = QtWidgets.QPushButton(self.central_widget)
+        self.button.setGeometry(QtCore.QRect(420, 290, 93, 28))
+        self.button.setObjectName("button")
+        self.button2 = QtWidgets.QPushButton(self.central_widget)
+        self.button2.setGeometry(QtCore.QRect(420, 360, 93, 28))
+        self.button2.setObjectName("button2")
         self.label = QtWidgets.QLabel(self.central_widget)
         self.label.setEnabled(True)
         self.label.setGeometry(QtCore.QRect(40, 30, 711, 121))
@@ -146,16 +147,16 @@ class UiMainWindow(object):
         self.retranslate_ui(main_window)
         QtCore.QMetaObject.connectSlotsByName(main_window)
 
-        self.push_button2.clicked.connect(self.open_group)
-        self.push_button.clicked.connect(self.open_solo)
+        self.button2.clicked.connect(self.open_group)
+        self.button.clicked.connect(self.open_solo)
 
     def retranslate_ui(self, main_window: QtWidgets.QMainWindow) -> None:
-        """Enters the text onto the user interface."""
+        """Enter the text onto the user interface."""
         _translate = QtCore.QCoreApplication.translate
         main_window.setWindowTitle(_translate("MainWindow", "GroupWatch"))
         main_window.setToolTip(_translate("MainWindow", "Hi there!"))
-        self.push_button.setText(_translate("MainWindow", "Enter"))
-        self.push_button2.setText(_translate("MainWindow", "Enter"))
+        self.button.setText(_translate("MainWindow", "Enter"))
+        self.button2.setText(_translate("MainWindow", "Enter"))
         self.label.setText(_translate("MainWindow",
                                       "Welcome to GroupWatch, an app that recommends shows based "
                                       "on what you and your buddy have already watched"))

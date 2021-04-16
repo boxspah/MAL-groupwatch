@@ -4,9 +4,6 @@ This module contains functions used in the Ui of the GroupWatch app.
 
 from PyQt5 import QtWidgets
 import csv
-import GroupWatchGroup
-import GroupWatchSolo
-import sys
 
 
 def add_options(cbox: QtWidgets.QComboBox) -> None:
