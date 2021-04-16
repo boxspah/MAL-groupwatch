@@ -207,6 +207,9 @@ class Ui_Frame(object):
         UiFunctions.add_options(self.cbox1_9)
         UiFunctions.add_options(self.cbox1_10)
 
+        self.pushButton_2.clicked.connect(self.get_values)
+        self.pushButton.clicked.connect(self.get_file)
+
     def retranslateUi(self, Frame):
         _translate = QtCore.QCoreApplication.translate
         Frame.setWindowTitle(_translate("Frame", "Solo Watch"))
@@ -233,6 +236,25 @@ class Ui_Frame(object):
                                         "font-weight:600;\">Returning user? "
                                         "Use your csv data!</span></p></body></html>"))
         self.pushButton.setText(_translate("Frame", "Insert CSV"))
+
+    def get_values(self) -> dict:
+        vals_so_far = dict()
+        vals_so_far[self.cbox1.currentText()] = self.spinBox.value()
+        vals_so_far[self.cbox1_2.currentText()] = self.spinBox_2.value()
+        vals_so_far[self.cbox1_3.currentText()] = self.spinBox_3.value()
+        vals_so_far[self.cbox1_4.currentText()] = self.spinBox_4.value()
+        vals_so_far[self.cbox1_5.currentText()] = self.spinBox_5.value()
+        vals_so_far[self.cbox1_6.currentText()] = self.spinBox_6.value()
+        vals_so_far[self.cbox1_7.currentText()] = self.spinBox_7.value()
+        vals_so_far[self.cbox1_8.currentText()] = self.spinBox_8.value()
+        vals_so_far[self.cbox1_9.currentText()] = self.spinBox_9.value()
+        vals_so_far[self.cbox1_10.currentText()] = self.spinBox_10.value()
+        print(vals_so_far)
+        return vals_so_far
+
+    def get_file(self):
+        file_name = QtWidgets.QFileDialog.getOpenFileName()
+        print(file_name)
 
 
 if __name__ == '__main__':

@@ -11,7 +11,7 @@ import sys
 
 def add_options(cbox: QtWidgets.QComboBox) -> None:
     """ Add anime titles as the options in a given combo box """
-    with open('anime.csv', encoding='utf8') as anime_csv:
+    with open('data\\anime.csv', encoding='utf8') as anime_csv:
         reader = csv.reader(anime_csv, delimiter=',')
         next(reader)
         for row in reader:
