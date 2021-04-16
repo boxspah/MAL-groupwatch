@@ -105,7 +105,7 @@ class _WeightedVertex:
         norm_dict = {}
         mean_rating = sum(self.neighbours.values()) / self.degree()
 
-        for v, w in self.neighbours:
+        for v, w in self.neighbours.items():
             norm_dict[v] = w - mean_rating
 
         return norm_dict
