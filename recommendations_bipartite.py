@@ -113,12 +113,15 @@ class WeightedBipartiteGraph(WeightedGraph):
         """Return whether item1 and item2 are adjacent vertices in this graph.
 
         Return False if item1 or item2 do not appear as vertices in this graph.
-
-        FIXME: possible optimization for bipartite graph
         """
         if item1 in self._vertices and item2 in self._vertices:
             v1 = self._vertices[item1]
-            return any(v2.item == item2 for v2 in v1.neighbours)
+            v2 = self._vertices[item2]
+
+            if v1.kind == v2.kind:
+                return v2 in v1.neighbours
+            else:
+                return False
         else:
             return False
 
