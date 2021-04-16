@@ -7,6 +7,7 @@ Implementation of a bipartite weighted recommendations graph based on a paper by
 from __future__ import annotations
 from typing import Any, Union
 
+from recommendations import WeightedGraph
 
 """ Constants for recommendations system."""
 INFLUENCE = 0.5
@@ -60,7 +61,7 @@ class _WeightedBipartiteVertex:
         ...
 
 
-class WeightedBipartiteGraph:
+class WeightedBipartiteGraph(WeightedGraph):
     """A bipartite weighted graph used to represent a anime recommendation network.
 
     TODO: finish documentation
@@ -75,6 +76,8 @@ class WeightedBipartiteGraph:
         """Initialize an empty graph (no vertices or edges)."""
         self._vertices = {}
 
+        WeightedGraph.__init__(self)
+
     def add_vertex(self, item: Any, kind: str) -> None:
         """Add a vertex with the given item and kind to this graph.
 
@@ -86,24 +89,6 @@ class WeightedBipartiteGraph:
         """
         if item not in self._vertices:
             self._vertices[item] = _WeightedBipartiteVertex(item, kind)
-
-    def add_edge(self, item1: Any, item2: Any, weight: Union[int, float] = 1) -> None:
-        """Add an edge between the two vertices with the given items in this graph,
-        with the given weight.
-
-        Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
-
-        Preconditions:
-            - item1 != item2
-        """
-        if item1 in self._vertices and item2 in self._vertices:
-            v1 = self._vertices[item1]
-            v2 = self._vertices[item2]
-
-            v1.neighbours[v2] = weight
-            v2.neighbours[v1] = weight
-        else:
-            raise ValueError
 
     def adjacent(self, item1: Any, item2: Any) -> bool:
         """Return whether item1 and item2 are adjacent vertices in this graph.
@@ -118,56 +103,7 @@ class WeightedBipartiteGraph:
         else:
             return False
 
-    def get_neighbours(self, item: Any) -> set:
-        """Return a set of the neighbours of the given item.
-
-        Note that the *items* are returned, not the _Vertex objects themselves.
-
-        Raise a ValueError if item does not appear as a vertex in this graph.
-        """
-        if item in self._vertices:
-            v = self._vertices[item]
-            return {neighbour.item for neighbour in v.neighbours}
-        else:
-            raise ValueError
-
-    def get_all_vertices(self, kind: str = '') -> set:
-        """Return a set of all vertex items in this graph.
-
-        If kind != '', only return the items of the given vertex kind.
-
-        Preconditions:
-            - kind in {'', 'user', 'anime'}
-        """
-        if kind != '':
-            return {v.item for v in self._vertices.values() if v.kind == kind}
-        else:
-            return set(self._vertices)
-
-    def get_weight(self, item1: Any, item2: Any) -> Union[int, float]:
-        """Return the weight of the edge between the given items.
-
-        Return 0 if item1 and item2 are not adjacent.
-
-        Preconditions:
-            - item1 and item2 are vertices in this graph
-        """
-        v1 = self._vertices[item1]
-        v2 = self._vertices[item2]
-        return v1.neighbours.get(v2, 0)
-
-    def average_weight(self, item: Any) -> float:
-        """Return the average weight of the edges adjacent to the vertex corresponding to item.
-
-        Raise ValueError if item does not corresponding to a vertex in the graph.
-        """
-        if item in self._vertices:
-            v = self._vertices[item]
-            return sum(v.neighbours.values()) / len(v.neighbours)
-        else:
-            raise ValueError
-
-    def get_similarity_score(self, item1: Any, item2: Any) -> float:
+    def get_similarity_score(self, item1: Any, item2: Any, score_type: str = 'sigmoid') -> float:
         """Return the similarity score between the two given items in this graph.
 
         TODO: finish documentation
@@ -182,4 +118,8 @@ class WeightedBipartiteGraph:
 
         Calculation based on formula given in paper.
         """
+        ...
+
+    def recommend_anime(self, anime: str, limit: int,
+                        score_type: str = 'unweighted') -> list[tuple[str, float]]:
         ...
