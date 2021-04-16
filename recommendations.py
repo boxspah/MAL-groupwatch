@@ -182,6 +182,12 @@ class WeightedGraph:
         v2 = self._vertices[item2]
         return v1.neighbours.get(v2, 0)
 
+    def get_degree(self, item1: Any) -> int:
+        if item1 in self._vertices:
+            return self._vertices[item1].degree()
+        else:
+            raise ValueError
+
     def average_weight(self, item: Any) -> float:
         """Return the average weight of the edges adjacent to the vertex corresponding to item.
 

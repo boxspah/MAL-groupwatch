@@ -5,9 +5,12 @@ Module Description:
 Implementation of a bipartite weighted recommendations graph based on a paper by Song (2019).
 """
 from __future__ import annotations
+
+import math
 from typing import Any, Union
 
 from recommendations import WeightedGraph
+from predictor import ReviewScorePredictor
 
 """ Constants for recommendations system."""
 INFLUENCE = 0.5
@@ -143,6 +146,15 @@ class WeightedBipartiteGraph(WeightedGraph):
         else:
             raise ValueError
 
+    def allocate_energy(self, item1: Any, item2: Any, energy: float) -> None:
+        if item1 in self._vertices and item2 in self._vertices:
+            v1 = self._vertices[item1]
+            v2 = self._vertices[item2]
+
+            v2.energy_matrix[v1] = energy
+        else:
+            raise ValueError
+
     def adjacent(self, item1: Any, item2: Any) -> bool:
         """Return whether item1 and item2 are adjacent vertices in this graph.
 
@@ -183,6 +195,25 @@ class WeightedBipartiteGraph(WeightedGraph):
 
 
 def create_weighted_bipartite_graph(weighted_graph: WeightedGraph) -> WeightedBipartiteGraph:
-    """Transforms a weighted graph into a weighted bipartite recomemndations graph
+    """Transforms a weighted graph into a weighted bipartite recommendations graph
     according to the specifications in Song (2019)."""
-    ...
+    graph = WeightedBipartiteGraph()
+
+    for a in weighted_graph.get_all_vertices('anime'):
+        graph.add_vertex(a.item, 'anime')
+
+    for u in weighted_graph.get_all_vertices('user'):
+        graph.add_vertex(u.item, 'user')
+        rated_anime = weighted_graph.get_neighbours(u)
+
+        for anime in rated_anime:
+            u_rat = weighted_graph.get_weight(u, anime)
+            graph.add_edge(u, anime, u_rat)
+
+            u_deg = weighted_graph.get_degree(u)
+            a_deg = weighted_graph.get_degree(anime)
+
+            energy = u_rat / (1 + math.e ** (-1 * (u_deg * a_deg) ** INFLUENCE))
+            graph.allocate_energy(u, anime, energy)
+
+    return graph
