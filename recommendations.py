@@ -221,7 +221,7 @@ class WeightedGraph:
             raise ValueError
 
     def get_similarity_score(self, item1: Any, item2: Any,
-                             score_type: str = 'unweighted') -> float:
+                             score_type: str) -> float:
         """Return the similarity score between the two given items in this graph.
 
         score_type is one of 'unweighted' or 'strict', corresponding to the
@@ -240,15 +240,19 @@ class WeightedGraph:
         Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
 
         Preconditions:
-            - score_type in {'unweighted', 'strict'}
+            - score_type in {'unweighted', 'strict', 'pearson'}
         """
         if item1 in self._vertices and item2 in self._vertices:
             v1 = self._vertices[item1]
             v2 = self._vertices[item2]
             if score_type == 'unweighted':
                 return v1.similarity_score_unweighted(v2)
-            else:
+            elif score_type == 'strict':
                 return v1.similarity_score_strict(v2)
+            elif score_type == 'pearson':
+                return v1.similarity_score_pearson(v2)
+            else:
+                raise ValueError
         else:
             raise ValueError
 
@@ -302,8 +306,8 @@ class WeightedGraph:
 if __name__ == '__main__':
     # Checking representation invariants and preconditions can take a lot of time
     # on large datasets
-    import python_ta.contracts
-    python_ta.contracts.check_all_contracts()
+    # import python_ta.contracts
+    # python_ta.contracts.check_all_contracts()
 
     import doctest
     doctest.testmod()
