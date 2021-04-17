@@ -1,9 +1,8 @@
 """
-CSC111 Project: Improving Anime Recommendations using
-Weighted Graphs and Extended Metadata : Multiple Anime
+MAL Groupwatch: multiple_anime
+=================================================
 
 Module Description:
-====================
 The module contains a function to return recommendations when given multiple anime shows.
 """
 from __future__ import annotations
@@ -12,7 +11,8 @@ from recommendations import WeightedGraph
 from typing import Union
 
 
-def recommend_animes(animes: list[tuple[str, Union[int, float]]], limit: int, review_graph: WeightedGraph,
+def recommend_animes(animes: list[tuple[str, Union[int, float]]], limit: int,
+                     review_graph: WeightedGraph,
                      score_type: str = 'unweighted') -> list[str]:
     """Return a list of up to <limit> recommended animes based on similarity to the given list of
     animes in the first element of each tuple in the list <animes>, weighted by the second element
@@ -20,18 +20,8 @@ def recommend_animes(animes: list[tuple[str, Union[int, float]]], limit: int, re
     returned if and only if there aren't enough animes that have a similarity score with any of the
     animes in inputted list that is greater than 0.
 
-    score_type is one of 'unweighted' or 'strict', corresponding to the
+    score_type is one of 'unweighted', 'strict', or 'pearson', corresponding to the
     different ways of calculating weighted graph vertex similarity.
-
-    The unweighted similarity score is zero if either of the two vertices have no
-    neighbors. Otherwise, it is the number of vertices adjacent to both self and other,
-    divided by the number of vertices adjacent to either self or other. It does not take
-    into account the weight of the edges.
-
-    The strict similarity score is zero if either of the two vertices have no
-    neighbors. Otherwise, it is the number of vertices adjacent to both self and other that
-    have the same weight on the corresponding edges to self and other, divided by the number of
-    vertices adjacent to either self or other. This takes the weight of the edges into account.
 
     The corresponding similarity score formula is used
     in this method (whenever the phrase "similarity score" appears below).
@@ -45,7 +35,7 @@ def recommend_animes(animes: list[tuple[str, Union[int, float]]], limit: int, re
         - all(anime[0] in self._vertices for anime in animes)
         - self._vertices[anime].kind == 'anime'
         - limit >= 1
-        - score_type in {'unweighted', 'strict'}
+        - score_type in {'unweighted', 'strict', 'pearson'}
     """
     # Accumulator of recommended anime for each anime show in <animes>
     animes_so_far = []
