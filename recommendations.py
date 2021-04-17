@@ -1,11 +1,10 @@
 """
-CSC111 Project: Improving Anime Recommendations using
-Weighted Graphs and Extended Metadata : Recommendations
+MAL Groupwatch: recommendations
+=================================================
 
 Module Description:
-====================
 The module contains classes to represent weighted graphs and vertices, which represent an anime
-recommendation network with ratings as well.
+recommendation network with ratings.
 """
 from __future__ import annotations
 
@@ -14,9 +13,11 @@ from typing import Any, Union
 
 
 class _WeightedVertex:
-    """A vertex in a weighted anime rating graph, used to represent a user or an anime.
+    """A vertex in a weighted rating graph, used to represent a user or an anime.
 
-    Each vertex item is either a user id or anime title.
+    Each vertex item is either a user id or an anime title.
+
+    Adapted from CSC111, Assignment 3.
 
     Instance Attributes:
         - item: The data stored in this vertex, representing a user or anime.
@@ -92,7 +93,14 @@ class _WeightedVertex:
 
         The score is zero if either of the two vertices have no neighbours.
         Otherwise, it is the cosine similarity of the weights of each vertex's edges centered
-        at 0.
+        at 0. This is otherwise known as the Pearson correlation.
+
+        NOTE: This score only works if self and other's edges don't have all have the same
+        weight.
+
+        Preconditions:
+            - len(set(self.neighbours.values())) > 1
+            - len(set(other.neighbours.values())) > 1
         """
         if self.degree() == 0 or other.degree() == 0:
             return 0
@@ -127,9 +135,10 @@ class _WeightedVertex:
 
 
 class WeightedGraph:
-    """A weighted graph used to represent a anime recommendation network that keeps track of
+    """A weighted graph used to represent a recommendation network that keeps track of
     ratings.
 
+    Adapted from CSC111, Assignment 3.
     """
     # Private Instance Attributes:
     #     - _vertices:
@@ -237,30 +246,13 @@ class WeightedGraph:
                              score_type: str) -> float:
         """Return the similarity score between the two given items in this graph.
 
-        score_type is one of 'unweighted' or 'strict', corresponding to the
+        score_type is one of 'unweighted', 'strict', or 'pearson', corresponding to the
         different ways of calculating weighted graph vertex similarity.
-
-        The unweighted similarity score is zero if either of the two vertices have no
-        neighbors. Otherwise, it is the number of vertices adjacent to both self and other,
-        divided by the number of vertices adjacent to either self or other. It does not take
-        into account the weight of the edges.
-
-        The strict similarity score is zero if either of the two vertices have no
-        neighbors. Otherwise, it is the number of vertices adjacent to both self and other that
-        have the same weight on the corresponding edges to self and other, divided by the number of
-        vertices adjacent to either self or other. This takes the weight of the edges into account.
-
-        The Pearson similarity score is zero if either of the two vertices have no neighbours.
-        Otherwise, it is the cosine similarity of the weights of each vertex's edges centered
-        at 0. This score only works if item1 and item2's edges don't have all have the same
-        weight.
 
         Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
 
         Preconditions:
             - score_type in {'unweighted', 'strict', 'pearson'}
-            - score_type == 'pearson' and set(self._vertices[item1].neighbours.values()) != set()
-            and set(self._vertices[item2].neighbours.values()) != set()
         """
         if item1 in self._vertices and item2 in self._vertices:
             v1 = self._vertices[item1]
@@ -272,6 +264,7 @@ class WeightedGraph:
             elif score_type == 'pearson':
                 return v1.similarity_score_pearson(v2)
             else:
+                # This should never run!
                 raise ValueError
         else:
             raise ValueError
@@ -279,22 +272,14 @@ class WeightedGraph:
     def recommend_anime(self, anime: str, limit: int,
                         score_type: str = 'unweighted') -> list[tuple[str, float]]:
         """Return a list of up to <limit> tuples, where the first element is the titles of the
-        recommended animes based on similarity to the given anime and the second their corresponding similarity scores.
-        Fewer than <limit> books are returned if and only if there aren't enough animes that
+        recommended anime based on similarity to the given anime and the second element is
+        their corresponding similarity scores.
+
+        Fewer than <limit> books are returned if and only if there aren't enough anime that
         have a similarity score with <anime> that is greater than 0.
 
-        score_type is one of 'unweighted' or 'strict', corresponding to the
+        score_type is one of 'unweighted', 'strict', or 'pearson', corresponding to the
         different ways of calculating weighted graph vertex similarity.
-
-        The unweighted similarity score is zero if either of the two vertices have no
-        neighbors. Otherwise, it is the number of vertices adjacent to both self and other,
-        divided by the number of vertices adjacent to either self or other. It does not take
-        into account the weight of the edges.
-
-        The strict similarity score is zero if either of the two vertices have no
-        neighbors. Otherwise, it is the number of vertices adjacent to both self and other that
-        have the same weight on the corresponding edges to self and other, divided by the number of
-        vertices adjacent to either self or other. This takes the weight of the edges into account.
 
         The corresponding similarity score formula is used
         in this method (whenever the phrase "similarity score" appears below).
@@ -307,7 +292,7 @@ class WeightedGraph:
             - anime in self._vertices
             - self._vertices[anime].kind == 'anime'
             - limit >= 1
-            - score_type in {'unweighted', 'strict'}
+            - score_type in {'unweighted', 'strict', 'pearson'}
         """
         anime_vertex = self._vertices[anime]
         anime_vertices = [anime_v for anime_v in self._vertices.values()
