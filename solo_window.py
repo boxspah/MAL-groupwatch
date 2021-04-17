@@ -11,6 +11,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from typing import Optional
 import ui_functions
 from recommendations_output import UiForm
+from load_graph import load_graph
+from multiple_anime import recommend_animes
 
 class UiFrame(object):
     """
@@ -290,12 +292,7 @@ class UiFrame(object):
         font.setWeight(75)
         self.tab5.setFont(font)
         self.tab5.setObjectName("tab5")
-        self.tab6 = QtWidgets.QLabel(frame)
-        self.tab6.setGeometry(QtCore.QRect(280, 480, 241, 16))
-        self.tab6.setObjectName("tab6")
-        self.button = QtWidgets.QPushButton(frame)
-        self.button.setGeometry(QtCore.QRect(350, 510, 93, 28))
-        self.button.setObjectName("button")
+
 
         self.retranslate_ui(frame)
         QtCore.QMetaObject.connectSlotsByName(frame)
@@ -312,7 +309,6 @@ class UiFrame(object):
         ui_functions.add_options(self.cbox10)
 
         self.button2.clicked.connect(self.get_values)
-        self.button.clicked.connect(self.get_file)
 
     def retranslate_ui(self, frame: QtWidgets.QFrame):
         """Enter the text onto the user interface."""
@@ -336,36 +332,28 @@ class UiFrame(object):
         self.tab2.setText(_translate("frame", "Anime"))
         self.tab3.setText(_translate("frame", "Rating"))
         self.tab5.setText(_translate("frame", "Rating"))
-        self.tab6.setText(_translate("frame",
-                                     "<html><head/><body><p><span style=\" "
-                                     "font-weight:600;\">Returning user? "
-                                     "Use your csv data!</span></p></body></html>"))
-        self.button.setText(_translate("frame", "Insert CSV"))
 
     def get_values(self) -> None:
         """Get values from user input (combo boxes and spin boxes)"""
-        vals_so_far = dict()
-        vals_so_far[self.cbox1.currentText()] = self.spin_box.value()
-        vals_so_far[self.cbox2.currentText()] = self.sbox2.value()
-        vals_so_far[self.cbox3.currentText()] = self.sbox3.value()
-        vals_so_far[self.cbox4.currentText()] = self.sbox4.value()
-        vals_so_far[self.cbox5.currentText()] = self.sbox5.value()
-        vals_so_far[self.cbox6.currentText()] = self.sbox6.value()
-        vals_so_far[self.cbox7.currentText()] = self.sbox7.value()
-        vals_so_far[self.cbox8.currentText()] = self.sbox8.value()
-        vals_so_far[self.cbox9.currentText()] = self.sbox9.value()
-        vals_so_far[self.cbox10.currentText()] = self.sbox10.value()
-        print(vals_so_far)
+        graph = load_graph("data/rating.csv", "data/anime.csv")
+        vals_so_far = []
+        vals_so_far.append((self.cbox1.currentText(), self.spin_box.value()))
+        vals_so_far.append((self.cbox2.currentText(), self.sbox2.value()))
+        vals_so_far.append((self.cbox3.currentText(), self.sbox3.value()))
+        vals_so_far.append((self.cbox4.currentText(), self.sbox4.value()))
+        vals_so_far.append((self.cbox5.currentText(), self.sbox5.value()))
+        vals_so_far.append((self.cbox6.currentText(), self.sbox6.value()))
+        vals_so_far.append((self.cbox7.currentText(), self.sbox7.value()))
+        vals_so_far.append((self.cbox8.currentText(), self.sbox8.value()))
+        vals_so_far.append((self.cbox9.currentText(), self.sbox9.value()))
+        vals_so_far.append((self.cbox10.currentText(), self.sbox10.value()))
+        vals_so_far = [val for val in vals_so_far if val[0] != 'None']
+        recommendations = recommend_animes(vals_so_far, 10, graph)
         self.window = QtWidgets.QWidget()
-        self.ui = UiForm()
+        self.ui = UiForm(recommendations)
         self.ui.setup_ui(self.window)
         self.widget.addWidget(self.window)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
-
-    def get_file(self) -> None:
-        """Create a QDialogBox to get a file."""
-        file_name = QtWidgets.QFileDialog.getOpenFileName()[0]
-        print(file_name)
 
 
 if __name__ == '__main__':
