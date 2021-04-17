@@ -324,8 +324,6 @@ class WeightedGraph:
 
 
 if __name__ == '__main__':
-    # Checking representation invariants and preconditions can take a lot of time
-    # on large datasets
     # import python_ta.contracts
     # python_ta.contracts.check_all_contracts()
 
@@ -337,6 +335,5 @@ if __name__ == '__main__':
         'max-line-length': 100,
         'disable': ['E1136', 'W0221'],
         'extra-imports': ['csv'],
-        'allowed-io': ['load_weighted_review_graph'],
         'max-nested-blocks': 4
     })

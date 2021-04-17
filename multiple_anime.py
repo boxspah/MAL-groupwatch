@@ -57,3 +57,20 @@ def recommend_animes(animes: list[tuple[str, int]], limit: int, review_graph: We
     recommendations_final = [anime_v1[0] for anime_v1 in animes_so_far[0: limit]
                              if anime_v1[1] != 0]
     return recommendations_final
+
+
+if __name__ == '__main__':
+    # import python_ta.contracts
+    # python_ta.contracts.check_all_contracts()
+
+    import doctest
+    doctest.testmod()
+
+    import python_ta
+
+    python_ta.check_all(config={
+        'max-line-length': 100,
+        'disable': ['E1136', 'W0221'],
+        'extra-imports': ['csv'],
+        'max-nested-blocks': 4
+    })
