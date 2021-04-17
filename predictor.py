@@ -6,6 +6,7 @@ Module Description:
 The module contains classes to represent predictions of what a given user would rate a
 show.
 """
+import math
 
 import recommendations
 
@@ -84,3 +85,40 @@ class SimilarUserPredictor(ReviewScorePredictor):
                 return round(self.graph.average_weight(anime))
             else:
                 return round(total_scores / total_similarities)
+
+
+class NearestNeighbourPredictor(ReviewScorePredictor):
+    # Private Instance Attributes:
+    #   - _score_type: the type of similarity score to use when computing similarity score
+    _score_type: str
+    _max_neighbours: int
+
+    def __init__(self, graph: recommendations.WeightedGraph,
+                 score_type: str, max_neighbours: int = 2) -> None:
+        self._score_type = score_type
+        self._max_neighbours = max_neighbours
+        ReviewScorePredictor.__init__(self, graph)
+
+    def predict_review_score(self, user: str, anime: str) -> int:
+        if self.graph.adjacent(user, anime):
+            return self.graph.get_weight(user, anime)
+
+        else:
+            neighbourhood = self.graph.get_neighbours(user)
+
+            ratings_list = sorted([(self.graph.get_similarity_score(n, anime, self._score_type), n)
+                                   for n in neighbourhood])
+            ratings_list = ratings_list[:self._max_neighbours]
+
+            total_score, total_sim = 0, 0
+            for sim, an in ratings_list:
+                review = self.graph.get_weight(user, an)
+                # adjusted_sim = 1 - math.acos(sim) / math.pi
+                # print(sim, adjusted_sim)
+                total_score += sim * review
+                total_sim += sim
+
+            if total_sim == 0:
+                return round(self.graph.average_weight(anime))
+            else:
+                return round(total_score / total_sim)
