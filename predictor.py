@@ -1,10 +1,9 @@
 """
-CSC111 Project: Improving Anime Recommendations using
-Weighted Graphs and Extended Metadata : Recommendations
+MAL Groupwatch: predictor
+=================================================
+
 Module Description:
-====================
-The module contains classes to represent predictions of what a given user would rate a
-show.
+The module contains classes to represent predictions of what a given user would rate an aime.
 """
 import math
 
@@ -54,22 +53,20 @@ class SimilarUserPredictor(ReviewScorePredictor):
         ReviewScorePredictor.__init__(self, graph)
 
     def predict_review_score(self, user: str, anime: str) -> int:
-        """ Predict the score
-
+        """
         Predictions are made in the following way:
-        If there exists an edge between a user and an anime, return the weight of the edge (the user's score).
-        Otherwise, return the anime's weighted score, where the weight of each review score is the similarity
-        score of the given user and the reviewing user. If the total similarity score of all users for the book
-        is 0, return the book's average review score.
+        If there exists an edge between a user and an anime, return the weight of the edge
+        (the user's score).
+        Otherwise, return the anime's weighted score, where the weight of each review score is
+        the similarity score of the given user and the reviewing user. If the total
+        similarity score of all users for the book is 0, return the book's average review score.
 
         Preconditions:
             - user in self.graph._vertices
             - anime in self.graph._vertices
         """
-        # use existing edge if it exists
         if self.graph.adjacent(user, anime):
             return self.graph.get_weight(user, anime)
-        # get weighted review score
         else:
             anime_n = self.graph.get_neighbours(anime)
             total_scores = 0
@@ -126,15 +123,13 @@ class NearestNeighbourPredictor(ReviewScorePredictor):
         else:
             neighbourhood = self.graph.get_neighbours(user)
 
-            ratings_list = sorted([(self.graph.get_similarity_score(n, anime, self._score_type), n)
+            ratings_list = sorted([(self.graph.get_similarity_score(anime, n, self._score_type), n)
                                    for n in neighbourhood])
             ratings_list = ratings_list[:self._max_neighbours]
 
             total_score, total_sim = 0, 0
             for sim, an in ratings_list:
                 review = self.graph.get_weight(user, an)
-                # adjusted_sim = 1 - math.acos(sim) / math.pi
-                # print(sim, adjusted_sim)
                 total_score += sim * review
                 total_sim += sim
 
