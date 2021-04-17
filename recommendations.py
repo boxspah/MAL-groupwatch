@@ -111,9 +111,6 @@ class _WeightedVertex:
 
         return norm_dict
 
-    def _magnitude(self) -> float:
-        return math.sqrt(sum(w ** 2 for w in self.neighbours.values()))
-
 
 class WeightedGraph:
     """A weighted graph used to represent a anime recommendation network that keeps track of
