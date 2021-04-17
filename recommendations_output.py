@@ -11,8 +11,7 @@ in our application.
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from typing import Optional, Union
-import solo_window
-import group_window
+
 
 class UiForm(object):
     """
@@ -121,10 +120,10 @@ class UiForm(object):
         self.item5.setObjectName("item5")
         self.grid_layout1.addWidget(self.item5, 4, 0, 1, 1)
 
-        self.retranslateUi(form)
+        self.retranslate_ui(form)
         QtCore.QMetaObject.connectSlotsByName(form)
 
-    def retranslateUi(self, form: QtWidgets.QWidget):
+    def retranslate_ui(self, form: QtWidgets.QWidget):
         """Enter the text onto the user interface."""
         _translate = QtCore.QCoreApplication.translate
         form.setWindowTitle(_translate("Form", "Form"))

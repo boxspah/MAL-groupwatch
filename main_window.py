@@ -22,6 +22,7 @@ class UiMainWindow(object):
         - window: Object that initializes the Window
         - ui: Object that initializes the next window based on whether we choose solo or group
         recommendations
+        - widget: A stack of widgets that allows us to switch screens without opening new windows
         - central_widget: Object upon which we lay upon the rest of our information
         - button: A button that leads to solo recommendation page
         - button2: A button that leads to group recommendation page
@@ -31,6 +32,7 @@ class UiMainWindow(object):
         - label4: Heading that prompts us to choose a button
         - label5: Information about the app at the bottom of the screen
     """
+    widget: Optional[QtWidgets.QStackedWidget]
     window: Optional[QtWidgets.QMainWindow]
     ui: Optional[Union[solo_window.UiFrame, group_window.UiFrame]]
     central_widget: Optional[QtWidgets.QWidget]
@@ -56,22 +58,25 @@ class UiMainWindow(object):
         self.label5 = None
         self.menu_bar = None
         self.status_bar = None
+        self.widget = None
 
     def open_group(self) -> None:
         """Open the group recommendation page in our application."""
         self.window = QtWidgets.QFrame()
         self.ui = group_window.UiFrame()
         self.ui.setup_ui(self.window)
-        widget.addWidget(self.window)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
+        self.widget.addWidget(self.window)
+        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        self.ui.widget = self.widget
 
     def open_solo(self) -> None:
         """Open the solo recommendation page in our application."""
         self.window = QtWidgets.QFrame()
         self.ui = solo_window.UiFrame()
         self.ui.setup_ui(self.window)
-        widget.addWidget(self.window)
-        widget.setCurrentIndex(widget.currentIndex() + 1)
+        self.widget.addWidget(self.window)
+        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
+        self.ui.widget = self.widget
 
     def setup_ui(self, main_window: QtWidgets.QMainWindow) -> None:
         """Set up the Greeting Window and initializes all the variables
@@ -146,7 +151,6 @@ class UiMainWindow(object):
 
         self.retranslate_ui(main_window)
         QtCore.QMetaObject.connectSlotsByName(main_window)
-
         self.button2.clicked.connect(self.open_group)
         self.button.clicked.connect(self.open_solo)
 
@@ -168,13 +172,13 @@ class UiMainWindow(object):
                                        "This app was made for the final project of CSC111."))
 
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    main_window1 = QtWidgets.QMainWindow()
-    ui = UiMainWindow()
-    ui.setup_ui(main_window1)
-    widget = QtWidgets.QStackedWidget()
-    widget.addWidget(main_window1)
-    widget.resize(800, 600)
-    widget.show()
-    sys.exit(app.exec_())
+# if __name__ == "__main__":
+#     app = QtWidgets.QApplication(sys.argv)
+#     main_window1 = QtWidgets.QMainWindow()
+#     ui = UiMainWindow()
+#     ui.setup_ui(main_window1)
+#     widget = QtWidgets.QStackedWidget()
+#     widget.addWidget(main_window1)
+#     widget.resize(800, 600)
+#     widget.show()
+#     sys.exit(app.exec_())
