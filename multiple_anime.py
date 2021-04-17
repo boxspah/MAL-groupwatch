@@ -9,9 +9,10 @@ The module contains a function to return recommendations when given multiple ani
 from __future__ import annotations
 
 from recommendations import WeightedGraph
+from typing import Union
 
 
-def recommend_animes(animes: list[tuple[str, int]], limit: int, review_graph: WeightedGraph,
+def recommend_animes(animes: list[tuple[str, Union[int, float]]], limit: int, review_graph: WeightedGraph,
                      score_type: str = 'unweighted') -> list[str]:
     """Return a list of up to <limit> recommended animes based on similarity to the given list of
     animes in the first element of each tuple in the list <animes>, weighted by the second element

@@ -9,6 +9,9 @@ The module contains the class that sets up the window where 2 user make their in
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from typing import Optional
+from load_graph import load_graph
+from multiple_anime import recommend_animes
+from predictor import NearestNeighbourPredictor
 import ui_functions
 from recommendations_output import UiForm
 
@@ -365,9 +368,9 @@ class UiFrame(object):
         self.cbox9.setItemText(0, _translate("frame", "None"))
         self.cbox10.setItemText(0, _translate("frame", "None"))
         self.tab.setText(_translate("frame",
-                                      "<html><head/><body><p>Now enter up to 5 anime each "
-                                      "of you have watched recently and your rating for each."
-                                      "</p></body></html>"))
+                                    "<html><head/><body><p>Now enter up to 5 anime each "
+                                    "of you have watched recently and your rating for each."
+                                    "</p></body></html>"))
         self.button2.setText(_translate("frame", "Let\'s Go!"))
         self.tab2.setText(_translate("frame", "Buddy 1"))
         self.tab3.setText(_translate("frame", "Buddy 2"))
@@ -378,22 +381,47 @@ class UiFrame(object):
 
     def get_values(self) -> None:
         """Get values from user input (combo boxes and spin boxes)"""
-        vals_so_far1 = dict()
-        vals_so_far1[self.cbox1.currentText()] = self.spin_box.value()
-        vals_so_far1[self.cbox2.currentText()] = self.sbox2.value()
-        vals_so_far1[self.cbox3.currentText()] = self.sbox3.value()
-        vals_so_far1[self.cbox4.currentText()] = self.sbox4.value()
-        vals_so_far1[self.cbox5.currentText()] = self.sbox5.value()
-
-        vals_so_far2 = dict()
-        vals_so_far2[self.cbox6.currentText()] = self.sbox6.value()
-        vals_so_far2[self.cbox7.currentText()] = self.sbox7.value()
-        vals_so_far2[self.cbox8.currentText()] = self.sbox8.value()
-        vals_so_far2[self.cbox9.currentText()] = self.sbox9.value()
-        vals_so_far2[self.cbox10.currentText()] = self.sbox10.value()
-        print(vals_so_far1, vals_so_far2)
+        graph = load_graph("data/rating.csv", "data/anime.csv")
+        vals_so_far1 = []
+        vals_so_far2 = []
+        vals_so_far1.append((self.cbox1.currentText(), self.spin_box.value()))
+        vals_so_far1.append((self.cbox2.currentText(), self.sbox2.value()))
+        vals_so_far1.append((self.cbox3.currentText(), self.sbox3.value()))
+        vals_so_far1.append((self.cbox4.currentText(), self.sbox4.value()))
+        vals_so_far1.append((self.cbox5.currentText(), self.sbox5.value()))
+        vals_so_far2.append((self.cbox6.currentText(), self.sbox6.value()))
+        vals_so_far2.append((self.cbox7.currentText(), self.sbox7.value()))
+        vals_so_far2.append((self.cbox8.currentText(), self.sbox8.value()))
+        vals_so_far2.append((self.cbox9.currentText(), self.sbox9.value()))
+        vals_so_far2.append((self.cbox10.currentText(), self.sbox10.value()))
+        vals_so_far1 = [val for val in vals_so_far1 if val[0] != 'None']
+        vals_so_far2 = [val2 for val2 in vals_so_far2 if val2[0] != 'None']
+        graph.add_vertex('user1', 'user')
+        graph.add_vertex('user2', 'user')
+        for val3 in vals_so_far1:
+            graph.add_vertex(val3[0], 'anime')
+            graph.add_edge('user1', val3[0], val3[1])
+        for val4 in vals_so_far2:
+            graph.add_vertex(val4[0], 'anime')
+            graph.add_edge('user2', val4[0], val4[1])
+        graph.add_vertex('user3', 'user')
+        predictor = NearestNeighbourPredictor(graph, 'pearson')
+        vals_so_far3 = [(val5[0], val5[1], predictor.predict_review_score('user2', val5[0]))
+                        for val5 in vals_so_far1]
+        vals_so_far4 = [(val5[0], val5[1], predictor.predict_review_score('user1', val5[0]))
+                        for val5 in vals_so_far2]
+        vals_so_far5 = []
+        for val6 in vals_so_far3:
+            avg = (val6[1] + val6[2])/2
+            graph.add_edge('user3', val6[0], avg)
+            vals_so_far5.append((val6[0], avg))
+        for val6 in vals_so_far4:
+            avg = (val6[1] + val6[2]) / 2
+            graph.add_edge('user3', val6[0], avg)
+            vals_so_far5.append((val6[0], avg))
+        recommendations = recommend_animes(vals_so_far5, 10, graph, 'pearson')
         self.window = QtWidgets.QWidget()
-        self.ui = UiForm()
+        self.ui = UiForm(recommendations)
         self.ui.setup_ui(self.window)
         self.widget.addWidget(self.window)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)

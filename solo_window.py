@@ -14,6 +14,7 @@ from recommendations_output import UiForm
 from load_graph import load_graph
 from multiple_anime import recommend_animes
 
+
 class UiFrame(object):
     """
     Create the window where a single user can input data.
@@ -348,6 +349,10 @@ class UiFrame(object):
         vals_so_far.append((self.cbox9.currentText(), self.sbox9.value()))
         vals_so_far.append((self.cbox10.currentText(), self.sbox10.value()))
         vals_so_far = [val for val in vals_so_far if val[0] != 'None']
+        graph.add_vertex('user1', 'user')
+        for val3 in vals_so_far:
+            graph.add_vertex(val3[0], 'anime')
+            graph.add_edge('user1', val3[0], val3[1])
         recommendations = recommend_animes(vals_so_far, 10, graph, 'pearson')
         self.window = QtWidgets.QWidget()
         self.ui = UiForm(recommendations)

@@ -9,11 +9,8 @@ This is the module that you should run to start the program!
 from PyQt5 import QtWidgets
 import sys
 from main_window import UiMainWindow
-from load_graph import load_graph
 
 if __name__ == '__main__':
-    # graph = load_graph("data/rating.csv", "data/anime.csv")
-
     app = QtWidgets.QApplication(sys.argv)
     main_window1 = QtWidgets.QMainWindow()
     ui = UiMainWindow()
