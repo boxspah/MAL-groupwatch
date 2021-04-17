@@ -6,9 +6,9 @@ Module Description:
 The module contains a function to return recommendations when given multiple anime shows.
 """
 from __future__ import annotations
+from typing import Union
 
 from recommendations import WeightedGraph
-from typing import Union
 
 
 def recommend_animes(animes: list[tuple[str, Union[int, float]]], limit: int,
@@ -51,8 +51,8 @@ def recommend_animes(animes: list[tuple[str, Union[int, float]]], limit: int,
 
 
 if __name__ == '__main__':
-    # import python_ta.contracts
-    # python_ta.contracts.check_all_contracts()
+    import python_ta.contracts
+    python_ta.contracts.check_all_contracts()
 
     import doctest
     doctest.testmod()
@@ -61,7 +61,6 @@ if __name__ == '__main__':
 
     python_ta.check_all(config={
         'max-line-length': 100,
-        'disable': ['E1136', 'W0221'],
-        'extra-imports': ['csv'],
-        'max-nested-blocks': 4
+        'disable': ['E1136'],
+        'extra-imports': ['recommendations'],
     })

@@ -6,9 +6,10 @@ Module Description:
 The sole function in this module reads two CSV files corresponding to the Kaggle dataset and
 returns a weighted bipartite graph for further processing.
 """
-from recommendations import WeightedGraph
 import html
 import csv
+
+from recommendations import WeightedGraph
 
 
 def load_graph(reviews_file: str, animes_file: str) -> WeightedGraph:
@@ -60,14 +61,12 @@ if __name__ == '__main__':
     # python_ta.contracts.check_all_contracts()
 
     import doctest
-
     doctest.testmod()
 
     import python_ta
-
     python_ta.check_all(config={
         'max-line-length': 100,
-        'disable': ['E1136', 'W0221'],
-        'extra-imports': ['csv'],
-        'max-nested-blocks': 4
+        'disable': ['E1136'],
+        'extra-imports': ['html', 'csv', 'recommendations'],
+        'allowed-io': ['load_graph']
     })
