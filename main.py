@@ -1,5 +1,10 @@
 """
-Main module for MAL-groupwatch
+MAL Groupwatch: main
+=================================================
+
+Module Description:
+This is the main module of the MAL Groupwatch project.
+This is the module that you should run to start the program!
 """
 from PyQt5 import QtWidgets
 import sys
