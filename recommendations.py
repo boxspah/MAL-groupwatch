@@ -92,13 +92,15 @@ class _WeightedVertex:
         else:
             self_vector = self._normalize_weights()
             other_vector = other._normalize_weights()
+            mag_self = math.sqrt(sum(w ** 2 for w in self_vector.values()))
+            mag_other = math.sqrt(sum(w ** 2 for w in other_vector.values()))
             dot_p_so_far = 0
 
             for v in self_vector:
                 if v in other_vector:
                     dot_p_so_far += self_vector[v] * other_vector[v]
 
-            return dot_p_so_far / (self._magnitude() * other._magnitude())
+            return dot_p_so_far / (mag_self * mag_other)
 
     def _normalize_weights(self) -> dict[_WeightedVertex, Union[float, int]]:
         norm_dict = {}
