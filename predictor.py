@@ -5,7 +5,7 @@ MAL Groupwatch: predictor
 Module Description:
 The module contains classes to represent predictions of what a given user would rate an aime.
 """
-import recommendations
+from recommendations import WeightedGraph
 
 
 class ReviewScorePredictor:
@@ -14,9 +14,9 @@ class ReviewScorePredictor:
     Instance Attributes:
         - graph: The anime review graph that this entity uses to make predictions.
     """
-    graph: recommendations.WeightedGraph
+    graph: WeightedGraph
 
-    def __init__(self, graph: recommendations.WeightedGraph) -> None:
+    def __init__(self, graph: WeightedGraph) -> None:
         """Initialize a new ReviewScorePredictor."""
         self.graph = graph
 
@@ -43,10 +43,8 @@ class SimilarUserPredictor(ReviewScorePredictor):
     #   - _score_type: the type of similarity score to use when computing similarity score
     _score_type: str
 
-    def __init__(self, graph: recommendations.WeightedGraph,
-                 score_type: str) -> None:
-        """Initialize a new SimilarUserPredictor.
-        """
+    def __init__(self, graph: WeightedGraph, score_type: str) -> None:
+        """Initialize a new SimilarUserPredictor."""
         self._score_type = score_type
         ReviewScorePredictor.__init__(self, graph)
 
@@ -97,8 +95,7 @@ class NearestNeighbourPredictor(ReviewScorePredictor):
     _score_type: str
     _max_neighbours: int
 
-    def __init__(self, graph: recommendations.WeightedGraph,
-                 score_type: str, max_neighbours: int = 2) -> None:
+    def __init__(self, graph: WeightedGraph, score_type: str, max_neighbours: int = 2) -> None:
         """Initialize a new NearestNeighbourPredictor."""
         self._score_type = score_type
         self._max_neighbours = max_neighbours
