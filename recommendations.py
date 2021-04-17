@@ -9,6 +9,7 @@ recommendation network with ratings as well.
 """
 from __future__ import annotations
 
+import math
 from typing import Any, Union
 
 
@@ -84,6 +85,45 @@ class _WeightedVertex:
             len_and = len(self_other)
             len_or = len(self_neighbours.union(other_neighbours))
             return len_and / len_or
+
+    def similarity_score_pearson(self, other: _WeightedVertex) -> float:
+        """Return the Pearson correlation (centered cosine similarity) score between this vertex
+        and other.
+
+        The score is zero if either of the two vertices have no neighbours.
+        Otherwise, it is the cosine similarity of the weights of each vertex's edges centered
+        at 0.
+        """
+        if self.degree() == 0 or other.degree() == 0:
+            return 0
+        else:
+            self_vector = self._normalize_weights()
+            other_vector = other._normalize_weights()
+            mag_self = math.sqrt(sum(w ** 2 for w in self_vector.values()))
+            mag_other = math.sqrt(sum(w ** 2 for w in other_vector.values()))
+            dot_p_so_far = 0
+
+            for v in self_vector:
+                if v in other_vector:
+                    dot_p_so_far += self_vector[v] * other_vector[v]
+
+            return dot_p_so_far / (mag_self * mag_other)
+
+    def _normalize_weights(self) -> dict[_WeightedVertex, Union[float, int]]:
+        """Return a dictionary mapping each neighbour of self to its associated edge weight after
+        being centered at 0.
+
+        Note that the sum of all edges connected to a vertex becomes 0.
+
+        This is a non-mutating method.
+        """
+        norm_dict = {}
+        mean_rating = sum(self.neighbours.values()) / self.degree()
+
+        for v, w in self.neighbours.items():
+            norm_dict[v] = w - mean_rating
+
+        return norm_dict
 
 
 class WeightedGraph:
@@ -194,7 +234,7 @@ class WeightedGraph:
             raise ValueError
 
     def get_similarity_score(self, item1: Any, item2: Any,
-                             score_type: str = 'unweighted') -> float:
+                             score_type: str) -> float:
         """Return the similarity score between the two given items in this graph.
 
         score_type is one of 'unweighted' or 'strict', corresponding to the
@@ -210,18 +250,29 @@ class WeightedGraph:
         have the same weight on the corresponding edges to self and other, divided by the number of
         vertices adjacent to either self or other. This takes the weight of the edges into account.
 
+        The Pearson similarity score is zero if either of the two vertices have no neighbours.
+        Otherwise, it is the cosine similarity of the weights of each vertex's edges centered
+        at 0. This score only works if item1 and item2's edges don't have all have the same
+        weight.
+
         Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
 
         Preconditions:
-            - score_type in {'unweighted', 'strict'}
+            - score_type in {'unweighted', 'strict', 'pearson'}
+            - score_type == 'pearson' and set(self._vertices[item1].neighbours.values()) != set()
+            and set(self._vertices[item2].neighbours.values()) != set()
         """
         if item1 in self._vertices and item2 in self._vertices:
             v1 = self._vertices[item1]
             v2 = self._vertices[item2]
             if score_type == 'unweighted':
                 return v1.similarity_score_unweighted(v2)
-            else:
+            elif score_type == 'strict':
                 return v1.similarity_score_strict(v2)
+            elif score_type == 'pearson':
+                return v1.similarity_score_pearson(v2)
+            else:
+                raise ValueError
         else:
             raise ValueError
 
@@ -275,8 +326,8 @@ class WeightedGraph:
 if __name__ == '__main__':
     # Checking representation invariants and preconditions can take a lot of time
     # on large datasets
-    import python_ta.contracts
-    python_ta.contracts.check_all_contracts()
+    # import python_ta.contracts
+    # python_ta.contracts.check_all_contracts()
 
     import doctest
     doctest.testmod()

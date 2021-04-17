@@ -10,13 +10,16 @@ The module contains the class that sets up the window where a single user makes 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from typing import Optional
 import ui_functions
-
+from recommendations_output import UiForm
 
 class UiFrame(object):
     """
     Create the window where a single user can input data.
 
     Instance Attributes:
+        - window: Initializing the window that displays the recommendations
+        - ui: Initializing the user interface for the window that displays the recommendations
+        - widget: A stack of widgets that allows us to switch screens without opening new windows
         - tab: The heading on top of the screen
         - tab2: Heading that labels combo boxes where users submit anime
         - tab3: Heading that labels spin boxes where users submit ratings
@@ -46,7 +49,9 @@ class UiFrame(object):
         - sbox9: Spin box where users choose a rating
         - sbox10: Spin box where users choose a rating
     """
-
+    window: Optional[QtWidgets.QWidget]
+    ui: Optional[UiForm]
+    widget: Optional[QtWidgets.QStackedWidget]
     tab: Optional[QtWidgets.QLabel]
     tab2: Optional[QtWidgets.QLabel]
     tab3: Optional[QtWidgets.QLabel]
@@ -106,6 +111,9 @@ class UiFrame(object):
         self.sbox8 = None
         self.sbox9 = None
         self.sbox10 = None
+        self.widget = None
+        self.window = None
+        self.ui = None
 
     def setup_ui(self, frame: QtWidgets.QFrame) -> None:
         """Set up the user input window and initializes all the variables
@@ -348,6 +356,11 @@ class UiFrame(object):
         vals_so_far[self.cbox9.currentText()] = self.sbox9.value()
         vals_so_far[self.cbox10.currentText()] = self.sbox10.value()
         print(vals_so_far)
+        self.window = QtWidgets.QWidget()
+        self.ui = UiForm()
+        self.ui.setup_ui(self.window)
+        self.widget.addWidget(self.window)
+        self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
 
     def get_file(self) -> None:
         """Create a QDialogBox to get a file."""
