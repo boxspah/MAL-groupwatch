@@ -39,14 +39,14 @@ class SimilarUserPredictor(ReviewScorePredictor):
     """An anime review predictor that makes a prediction based on how similar users rated the anime.
 
     Representation Invariants:
-        - self._score_type in {'unweighted', 'strict'}
+        - self._score_type in {'unweighted', 'strict', 'pearson'}
     """
     # Private Instance Attributes:
     #   - _score_type: the type of similarity score to use when computing similarity score
     _score_type: str
 
     def __init__(self, graph: recommendations.WeightedGraph,
-                 score_type: str = 'unweighted') -> None:
+                 score_type: str) -> None:
         """Initialize a new SimilarUserPredictor.
         """
         self._score_type = score_type
@@ -56,7 +56,7 @@ class SimilarUserPredictor(ReviewScorePredictor):
         """ Predict the score
 
         Predictions are made in the following way:
-        If there exists an edge between a user and an anime, return the weight of the edge (the user's score). 
+        If there exists an edge between a user and an anime, return the weight of the edge (the user's score).
         Otherwise, return the anime's weighted score, where the weight of each review score is the similarity
         score of the given user and the reviewing user. If the total similarity score of all users for the book
         is 0, return the book's average review score.
