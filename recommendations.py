@@ -87,6 +87,13 @@ class _WeightedVertex:
             return len_and / len_or
 
     def similarity_score_pearson(self, other: _WeightedVertex) -> float:
+        """Return the Pearson correlation (centered cosine similarity) score between this vertex
+        and other.
+
+        The score is zero if either of the two vertices have no neighbours.
+        Otherwise, it is the cosine similarity of the weights of each vertex's edges centered
+        at 0.
+        """
         if self.degree() == 0 or other.degree() == 0:
             return 0
         else:
@@ -103,6 +110,13 @@ class _WeightedVertex:
             return dot_p_so_far / (mag_self * mag_other)
 
     def _normalize_weights(self) -> dict[_WeightedVertex, Union[float, int]]:
+        """Return a dictionary mapping each neighbour of self to its associated edge weight after
+        being centered at 0.
+
+        Note that the sum of all edges connected to a vertex becomes 0.
+
+        This is a non-mutating method.
+        """
         norm_dict = {}
         mean_rating = sum(self.neighbours.values()) / self.degree()
 
@@ -236,10 +250,17 @@ class WeightedGraph:
         have the same weight on the corresponding edges to self and other, divided by the number of
         vertices adjacent to either self or other. This takes the weight of the edges into account.
 
+        The Pearson similarity score is zero if either of the two vertices have no neighbours.
+        Otherwise, it is the cosine similarity of the weights of each vertex's edges centered
+        at 0. This score only works if item1 and item2's edges don't have all have the same
+        weight.
+
         Raise a ValueError if item1 or item2 do not appear as vertices in this graph.
 
         Preconditions:
             - score_type in {'unweighted', 'strict', 'pearson'}
+            - score_type == 'pearson' and set(self._vertices[item1].neighbours.values()) != set()
+            and set(self._vertices[item2].neighbours.values()) != set()
         """
         if item1 in self._vertices and item2 in self._vertices:
             v1 = self._vertices[item1]
