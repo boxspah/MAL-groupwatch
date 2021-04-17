@@ -293,17 +293,16 @@ class WeightedGraph:
             - limit >= 1
             - score_type in {'unweighted', 'strict', 'pearson'}
         """
-        anime_vertex = self._vertices[anime]
-        anime_vertices = [anime_v for anime_v in self._vertices.values()
-                          if anime_v.kind == 'anime' and anime_v is not anime_vertex]
+        anime_vertices = self.get_all_vertices('anime')
+        anime_vertices.remove(anime)
+        anime_vertices = list(anime_vertices)
+
         similarity_scores = {}
         for anime_v1 in anime_vertices:
-            similarity_scores[anime_v1.item] = \
-                self.get_similarity_score(anime, anime_v1.item, score_type)
-        anime_vertices.sort(key=(lambda x: x.item), reverse=True)
-        anime_vertices.sort(key=(lambda x: similarity_scores[x.item]), reverse=True)
-        animes = [(anime_v2.item, similarity_scores[anime_v2.item])
-                  for anime_v2 in anime_vertices[0: limit] if similarity_scores[anime_v2.item] != 0]
+            similarity_scores[anime_v1] = self.get_similarity_score(anime, anime_v1, score_type)
+        anime_vertices.sort(key=(lambda x: (similarity_scores[x], x)), reverse=True)
+        animes = [(anime_v2, similarity_scores[anime_v2])
+                  for anime_v2 in anime_vertices[0: limit] if similarity_scores[anime_v2] != 0]
         return animes
 
 
