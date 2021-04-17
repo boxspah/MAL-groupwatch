@@ -92,15 +92,10 @@ class _WeightedVertex:
         and other.
 
         The score is zero if either of the two vertices have no neighbours.
+        If self's neighbours all have the same weight, or other's neighbours all have the same
+        weight, return the strict weighted similarity score between self and other.
         Otherwise, it is the cosine similarity of the weights of each vertex's edges centered
         at 0. This is otherwise known as the Pearson correlation.
-
-        NOTE: This score only works if self and other's edges don't have all have the same
-        weight.
-
-        Preconditions:
-            - len(set(self.neighbours.values())) > 1
-            - len(set(other.neighbours.values())) > 1
         """
         if self.degree() == 0 or other.degree() == 0:
             return 0
@@ -109,13 +104,17 @@ class _WeightedVertex:
             other_vector = other._normalize_weights()
             mag_self = math.sqrt(sum(w ** 2 for w in self_vector.values()))
             mag_other = math.sqrt(sum(w ** 2 for w in other_vector.values()))
-            dot_p_so_far = 0
 
-            for v in self_vector:
-                if v in other_vector:
-                    dot_p_so_far += self_vector[v] * other_vector[v]
+            if mag_other == 0:
+                return self.similarity_score_strict(other)
+            else:
+                dot_p_so_far = 0
 
-            return dot_p_so_far / (mag_self * mag_other)
+                for v in self_vector:
+                    if v in other_vector:
+                        dot_p_so_far += self_vector[v] * other_vector[v]
+
+                return dot_p_so_far / (mag_self * mag_other)
 
     def _normalize_weights(self) -> dict[_WeightedVertex, Union[float, int]]:
         """Return a dictionary mapping each neighbour of self to its associated edge weight after
