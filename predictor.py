@@ -88,18 +88,38 @@ class SimilarUserPredictor(ReviewScorePredictor):
 
 
 class NearestNeighbourPredictor(ReviewScorePredictor):
+    """A graph-based entity that predicts a user's review score for an anime based on similar
+    anime.
+
+    Preconditions:
+        - self._score_type in {'unweighted', 'strict', 'pearson'}
+        - self._max_neighbours > 0
+    """
     # Private Instance Attributes:
     #   - _score_type: the type of similarity score to use when computing similarity score
+    #   - _max_neighbours: the maximum number of neighbours the prediction should factor into
+    #   the weighted score
     _score_type: str
     _max_neighbours: int
 
     def __init__(self, graph: recommendations.WeightedGraph,
                  score_type: str, max_neighbours: int = 2) -> None:
+        """Initialize a new NearestNeighbourPredictor."""
         self._score_type = score_type
         self._max_neighbours = max_neighbours
         ReviewScorePredictor.__init__(self, graph)
 
     def predict_review_score(self, user: str, anime: str) -> int:
+        """Predict the user's review score for the target anime.
+
+        If an edge exists between the user and the anime, return the weight of that edge.
+        Otherwise, return the weighted score of the anime based on the top <self._max_neighbours>
+        anime, where the weight is the similarity score of the target anime to the compared anime.
+        If the total similarity score of all users for this anime equals 0, return the average
+        review score of the anime.
+
+        This predictor implementation is based on item-item collaborative filtering.
+        """
         if self.graph.adjacent(user, anime):
             return self.graph.get_weight(user, anime)
 
