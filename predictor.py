@@ -142,3 +142,21 @@ class NearestNeighbourPredictor(ReviewScorePredictor):
                 return round(self.graph.average_weight(anime))
             else:
                 return round(total_score / total_sim)
+
+
+if __name__ == '__main__':
+    # import python_ta.contracts
+    # python_ta.contracts.check_all_contracts()
+
+    import doctest
+
+    doctest.testmod()
+
+    import python_ta
+
+    python_ta.check_all(config={
+        'max-line-length': 100,
+        'disable': ['E1136', 'W0221'],
+        'extra-imports': ['csv'],
+        'max-nested-blocks': 4
+    })
