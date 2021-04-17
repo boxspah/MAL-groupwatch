@@ -15,15 +15,15 @@ if __name__ == '__main__':
     # import python_ta.contracts
     # python_ta.contracts.check_all_contracts()
 
-    import doctest
-    doctest.testmod()
-
-    import python_ta
-    python_ta.check_all(config={
-        'max-line-length': 100,
-        'disable': ['E1136'],
-        'extra-imports': ['PyQt5', 'sys', 'main_window'],
-    })
+    # import doctest
+    # doctest.testmod()
+    #
+    # import python_ta
+    # python_ta.check_all(config={
+    #     'max-line-length': 100,
+    #     'disable': ['E1136'],
+    #     'extra-imports': ['PyQt5', 'sys', 'main_window'],
+    # })
 
     app = QtWidgets.QApplication(sys.argv)
     main_window1 = QtWidgets.QMainWindow()
