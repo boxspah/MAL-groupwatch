@@ -12,6 +12,7 @@ from typing import Optional
 import ui_functions
 from recommendations_output import UiForm
 
+
 class UiFrame(object):
     """
     Create the window where 2 users input data.
@@ -121,7 +122,7 @@ class UiFrame(object):
         self.window = None
         self.ui = None
 
-    def setup_ui(self, frame: QtWidgets.QFrame):
+    def setup_ui(self, frame: QtWidgets.QFrame) -> None:
         """Set up the user input window and initializes all the variables
                 to create the user interface of the window."""
         frame.setObjectName("frame")
@@ -332,12 +333,6 @@ class UiFrame(object):
         font.setWeight(75)
         self.tab7.setFont(font)
         self.tab7.setObjectName("tab7")
-        self.tab8 = QtWidgets.QLabel(frame)
-        self.tab8.setGeometry(QtCore.QRect(270, 500, 241, 16))
-        self.tab8.setObjectName("tab8")
-        self.button = QtWidgets.QPushButton(frame)
-        self.button.setGeometry(QtCore.QRect(340, 530, 93, 28))
-        self.button.setObjectName("button")
 
         self.retranslate_ui(frame)
         QtCore.QMetaObject.connectSlotsByName(frame)
@@ -354,7 +349,6 @@ class UiFrame(object):
         ui_functions.add_options(self.cbox10)
 
         self.button2.clicked.connect(self.get_values)
-        self.button.clicked.connect(self.get_file)
 
     def retranslate_ui(self, frame: QtWidgets.QFrame) -> None:
         """Enter the text onto the user interface."""
@@ -381,11 +375,6 @@ class UiFrame(object):
         self.tab5.setText(_translate("frame", "Anime"))
         self.tab6.setText(_translate("frame", "Anime"))
         self.tab7.setText(_translate("frame", "Rating"))
-        self.tab8.setText(_translate("frame",
-                                        "<html><head/><body><p><span style=\" "
-                                        "font-weight:600;\">Returning user? Use your csv data!"
-                                        "</span></p></body></html>"))
-        self.button.setText(_translate("frame", "Insert CSV"))
 
     def get_values(self) -> None:
         """Get values from user input (combo boxes and spin boxes)"""
@@ -408,11 +397,6 @@ class UiFrame(object):
         self.ui.setup_ui(self.window)
         self.widget.addWidget(self.window)
         self.widget.setCurrentIndex(self.widget.currentIndex() + 1)
-
-    def get_file(self) -> None:
-        """Create a QDialogBox to get a file."""
-        file_name = QtWidgets.QFileDialog.getOpenFileName()[0]
-        print(file_name)
 
 
 if __name__ == "__main__":

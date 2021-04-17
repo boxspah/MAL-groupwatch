@@ -41,7 +41,7 @@ def recommend_animes(animes: list[tuple[str, int]], limit: int, review_graph: We
     v1 comes before v2 if and only if v1.item > v2.item.
 
     Preconditions:
-        - anime in self._vertices
+        - all(anime[0] in self._vertices for anime in animes)
         - self._vertices[anime].kind == 'anime'
         - limit >= 1
         - score_type in {'unweighted', 'strict'}
@@ -50,11 +50,12 @@ def recommend_animes(animes: list[tuple[str, int]], limit: int, review_graph: We
     animes_so_far = []
     for anime, score in animes:
         recommendations = review_graph.recommend_anime(anime, limit, score_type)
-        recommendations_weighted = [(anime[0], score * anime[1]) for anime in recommendations]
+        recommendations_weighted = [(show[0], score * show[1]) for show in recommendations]
         animes_so_far.extend(recommendations_weighted)
     animes_so_far.sort(key=(lambda x: x[0]), reverse=True)
     animes_so_far.sort(key=(lambda x: x[1]), reverse=True)
-    recommendations_final = [anime_v1[0] for anime_v1 in animes_so_far[0: limit] if anime_v1[1] != 0]
+    recommendations_final = [anime_v1[0] for anime_v1 in animes_so_far[0: limit]
+                             if anime_v1[1] != 0]
     return recommendations_final
 
 
