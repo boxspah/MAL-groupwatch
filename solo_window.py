@@ -310,7 +310,7 @@ class UiFrame(object):
 
         self.button2.clicked.connect(self.get_values)
 
-    def retranslate_ui(self, frame: QtWidgets.QFrame):
+    def retranslate_ui(self, frame: QtWidgets.QFrame) -> None:
         """Enter the text onto the user interface."""
         _translate = QtCore.QCoreApplication.translate
         frame.setWindowTitle(_translate("frame", "Solo Watch"))
@@ -348,7 +348,7 @@ class UiFrame(object):
         vals_so_far.append((self.cbox9.currentText(), self.sbox9.value()))
         vals_so_far.append((self.cbox10.currentText(), self.sbox10.value()))
         vals_so_far = [val for val in vals_so_far if val[0] != 'None']
-        recommendations = recommend_animes(vals_so_far, 10, graph)
+        recommendations = recommend_animes(vals_so_far, 10, graph, 'pearson')
         self.window = QtWidgets.QWidget()
         self.ui = UiForm(recommendations)
         self.ui.setup_ui(self.window)
